@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex Database Lab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .pokemon-card { transition: transform 0.2s; }
+        .pokemon-card:hover { transform: scale(1.05); }
+        .type-badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; }
+        .type-Grass { background-color: #7AC74C; }
+        .type-Fire { background-color: #EE8130; }
+        .type-Water { background-color: #6390F0; }
+        .type-Electric { background-color: #F7D02C; }
+        .type-Poison { background-color: #A33EA1; }
+        .type-Normal { background-color: #A8A77A; }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container">
+            <a class="navbar-brand" href="/">Pokédex Lab</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">The Pokedex</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/trainers">Trainers</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-dark text-white text-center">
+        <div class="container">
+            <span>&copy; 2026 Pokedex Database Lab - A Teaching Project</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

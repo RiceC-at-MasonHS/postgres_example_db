@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col text-center">
+        <h1 class="display-4">Registered Trainers</h1>
+        <p class="lead text-muted">A list of all aspiring Pokemon Masters in our database.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>Name</th>
+                            <th>Hometown</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trainer in trainers %}
+                        <tr>
+                            <td class="ps-4 text-muted">{{ trainer.id }}</td>
+                            <td><span class="fw-bold">{{ trainer.name }}</span></td>
+                            <td>{{ trainer.hometown or 'Unknown' }}</td>
+                            <td class="text-end pe-4">
+                                <a href="/trainer/{{ trainer.id }}" class="btn btn-sm btn-outline-danger px-3 rounded-pill">View Team</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5">No trainers registered. Use the CLI to add some!</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
