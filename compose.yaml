@@ -1,0 +1,100 @@
+# Compatible with Docker (Linux/Mac/Windows)
+services:
+  db:
+    image: docker.io/library/postgres:15-alpine
+    container_name: pokedex_db
+    environment:
+      POSTGRES_DB: pokedex
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pokedex_net
+
+  pgadmin:
+    image: docker.io/dpage/pgadmin4:latest
+    container_name: pokedex_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@pgadmin.org"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pokedex_net  
+
+  app:
+    build: .
+    container_name: pokedex_app
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pokedex
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: pokedex
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      SQL_ECHO: "True"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    networks:
+      - pokedex_net
+
+  gui:
+    build: .
+    container_name: pokedex_gui
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pokedex
+      FLASK_APP: src/app.py
+      FLASK_DEBUG: "1"
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: flask run --host=0.0.0.0
+    networks:
+      - pokedex_net
+
+  test:
+    build: .
+    container_name: pokedex_test
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pokedex
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/bash -c "\
+      pip install --upgrade pip -q --root-user-action=ignore \
+      && pip3 install pytest -q --root-user-action=ignore \
+      && pytest -q"
+    networks:
+      - pokedex_net
+
+volumes:
+  postgres_data:
+
+networks:
+  pokedex_net:
