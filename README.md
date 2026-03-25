@@ -1,113 +1,73 @@
-# Pokedex Database Lab 🎮
+# Pokedex Database Lab (Postgres Example) 🎮
 
-Welcome to your first mission as a Database Researcher! This project is a hands-on lab designed to teach you the fundamentals of **Relational Databases** using the world of Pokemon.
+A teaching tool designed to demonstrate relational database concepts through a Pokemon-themed application. This repository provides a complete environment including a PostgreSQL database, a Flask web interface, a CLI management tool, and pgAdmin for direct database inspection.
 
-You will learn how to:
-1.  **Explore** data through a web interface.
-2.  **Manipulate** data using a Command Line Interface (CLI).
-3.  **Inspect** raw tables using professional tools like pgAdmin.
-4.  **Query** the database directly using SQL (Structured Query Language).
+> [!IMPORTANT]
+> **Students & Learners:** For the guided lab instructions and missions, please see [**LESSON.md**](./LESSON.md).
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Project Overview
 
-### 1. Launch the Lab
-Everything is pre-configured with **Docker**. Just run:
+This lab demonstrates how different application layers interact with a relational database:
+- **ORM (SQLAlchemy)**: How Python objects map to database tables.
+- **Web UI (Flask)**: How data is queried and rendered in a browser.
+- **CLI (Click)**: How to manage and manipulate data via the terminal.
+- **Raw SQL (pgAdmin)**: How to inspect and query data directly.
+
+---
+
+## 🏗️ Technical Architecture
+
+- **Database**: [PostgreSQL 15](https://www.postgresql.org/)
+- **Backend**: Python 3.13 with [SQLAlchemy 2.0](https://www.sqlalchemy.org/)
+- **Web Interface**: [Flask](https://flask.palletsprojects.com/) + [Bootstrap 5](https://getbootstrap.com/)
+- **CLI Framework**: [Click](https://click.palletsprojects.com/)
+- **Containerization**: [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+- **Testing**: [Pytest](https://docs.pytest.org/)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine installed.
+- [Git](https://git-scm.com/) installed.
+
+### 2. Setup
+Clone the repository and launch the environment:
 
 ```bash
+git clone https://github.com/RiceC-at-MasonHS/postgres-example-db.git
+cd postgres-example-db
 docker compose up -d
 ```
 
-This starts four services:
--   **Database (Postgres)**: Where the data actually lives.
--   **Pokedex GUI (Flask)**: A web interface to view the data (`http://localhost:5000`).
--   **pgAdmin**: A professional database management tool (`http://localhost:8080`).
--   **Pokedex CLI**: A tool to interact with the database via commands.
+This starts the following services:
+- **Pokedex GUI**: [http://localhost:5000](http://localhost:5000)
+- **pgAdmin**: [http://localhost:8080](http://localhost:8080) (User: `admin@pgadmin.org` / Pass: `admin`)
+- **Database (Postgres)**: Internal port `5432`
 
-### 2. Initialize and Seed
-Before you can see any Pokemon, you need to set up the "schema" (the tables) and add some initial data.
+### 3. Initialize the Database
+Set up the schema and seed initial data:
 
 ```bash
-# Enter the app container
-docker exec -it pokedex_app bash
-
-# Inside the container, run these commands:
-python main.py db init
-python main.py db seed
+docker exec -it pokedex_app python main.py db init
+docker exec -it pokedex_app python main.py db seed
 ```
 
 ---
 
-## 🗺️ Your Learning Path
+## 🧪 Development & Testing
 
-### Mission 0: The Pokedex UI
-Open your browser to [http://localhost:5000](http://localhost:5000).
--   Explore the Pokedex.
--   Check out the "Trainers" list.
--   View Ash Ketchum's profile to see his current team.
-
-**Think about:** How is the data organized? How does the website know that Ash has a Pikachu?
-
-### Mission 1: Command Line Mastery
-Now, let's add some data ourselves. Stay inside the `docker exec` session:
-
-```bash
-# See all Pokemon
-python main.py pokemon list
-
-# Add your favorite Pokemon
-python main.py pokemon add
-
-# Register yourself as a trainer
-python main.py trainer add
-
-# Catch a Pokemon for your team!
-python main.py catch <your_trainer_id> <pokemon_id> --nickname "Sparky"
-```
-
-Refresh the web UI to see your changes reflected immediately!
-
-### Mission 2: Under the Hood (pgAdmin)
-Professional developers use tools like **pgAdmin** to look at the "raw" tables.
-1.  Go to [http://localhost:8080](http://localhost:8080).
-2.  **Login**: `admin@pgadmin.org` / `admin`.
-3.  **Connect to Server**:
-    -   Right-click "Servers" > Register > Server.
-    -   **Name**: Pokedex.
-    -   **Connection tab**:
-        -   **Host**: `db`
-        -   **Maintenance DB**: `pokedex`
-        -   **Username**: `postgres`
-        -   **Password**: `postgres`
-4.  **Explore**: Navigate to `Databases` > `pokedex` > `Schemas` > `public` > `Tables`.
-
----
-
-## 🧪 Test-Driven Development (TDD)
-
-Database integrity is crucial. We use **tests** to make sure our code doesn't accidentally break the rules of our database.
-
-To run the tests:
+To run the automated test suite:
 ```bash
 docker compose run --rm test
 ```
 
-### 🛠️ Your Assignment: Fix the Bug!
-We have a bug in our system: **Pokemon can be created with negative Attack points!** This shouldn't be allowed in a fair tournament.
-
-1.  Open `tests/test_pokedex.py`.
-2.  Find the test case that is currently failing.
-3.  Modify `src/models.py` or the CLI logic to ensure Attack values are always positive.
+For more details on specific missions and the TDD assignment, refer to the [**LESSON.md**](./LESSON.md) file.
 
 ---
-
-## 🏗️ Architecture
-
--   **Backend**: Python 3.13 + SQLAlchemy (ORM)
--   **Database**: PostgreSQL 15
--   **Web UI**: Flask + Bootstrap
--   **Infrastructure**: Docker & Docker Compose
 
 ## 📜 License
 MIT
