@@ -97,7 +97,8 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 4.  **Explore**: Navigate to `Databases` > `pokedex` > `Schemas` > `public` > `Tables`.
 
 ---
-> [!TIP] If you are in Rice's class, You can turn in a screenshot at this point. 
+> [!TIP] 
+> If you are in Rice's class, You can turn in a screenshot at this point. 
 >
 > Your screenshot should show:
 >    - (1) the contents of the `trainers` table
