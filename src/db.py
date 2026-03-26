@@ -38,6 +38,12 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     print("✓ Pokedex schema initialized successfully (Postgres)")
 
+def drop_db():
+    """Drop all tables in the database."""
+    from src.models import Base
+    Base.metadata.drop_all(bind=engine)
+    print("✓ Pokedex tables dropped successfully.")
+
 def close_db():
     """Close the database connection."""
     engine.dispose()

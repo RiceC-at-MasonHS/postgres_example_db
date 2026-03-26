@@ -4,7 +4,7 @@ Interactive command-line tool for managing Pokemon, Trainers, and Collections.
 """
 
 import click
-from src.db import get_session, init_db
+from src.db import get_session, init_db, drop_db
 from src.models import Pokemon, Trainer, Collection
 from src import queries
 
@@ -33,8 +33,19 @@ def init():
 
 
 @db.command()
+def reset():
+    """Drop and recreate all database tables (HARD RESET)."""
+    if click.confirm("Are you sure you want to delete ALL data and reset the database?"):
+        click.echo("Dropping tables...")
+        drop_db()
+        click.echo("Recreating tables...")
+        init_db()
+        click.echo(click.style("✓ Database reset complete!", fg="green"))
+
+
+@db.command()
 def seed():
-    """Seed the database with initial Pokemon and a trainer."""
+    """Seed the database with Gen 1 starters and Ash."""
     session = get_session()
 
     # Starter Pokemon
@@ -65,7 +76,79 @@ def seed():
             click.echo("Ash caught Pikachu!")
 
     session.commit()
-    click.echo(click.style("✓ Database seeded successfully!", fg="green"))
+    click.echo(click.style("✓ Gen 1 (Kanto) data seeded!", fg="green"))
+    session.close()
+
+
+@db.command()
+def seed2():
+    """Seed the database with Gen 2 starters and Misty."""
+    session = get_session()
+
+    johto = [
+        {"name": "Chikorita", "type1": "Grass", "type2": None, "hp": 45, "attack": 49, "defense": 65, "speed": 45},
+        {"name": "Cyndaquil", "type1": "Fire", "type2": None, "hp": 39, "attack": 52, "defense": 43, "speed": 65},
+        {"name": "Totodile", "type1": "Water", "type2": None, "hp": 50, "attack": 65, "defense": 64, "speed": 43},
+        {"name": "Marill", "type1": "Water", "type2": "Fairy", "hp": 70, "attack": 20, "defense": 50, "speed": 40},
+    ]
+
+    for p in johto:
+        if not queries.find_pokemon_by_name(session, p["name"]):
+            session.add(Pokemon(**p))
+            click.echo(f"Added {p['name']} to Pokedex.")
+
+    # Misty
+    misty = session.query(Trainer).filter(Trainer.name == "Misty").first()
+    if not misty:
+        misty = Trainer(name="Misty", hometown="Cerulean City")
+        session.add(misty)
+        click.echo("Added Misty as a trainer.")
+        session.commit()
+
+        # Misty catches Marill
+        marill = queries.find_pokemon_by_name(session, "Marill")
+        if marill:
+            queries.catch_pokemon(session, misty.id, marill.id, level=10)
+            click.echo("Misty caught Marill!")
+
+    session.commit()
+    click.echo(click.style("✓ Gen 2 (Johto) data seeded!", fg="green"))
+    session.close()
+
+
+@db.command()
+def seed3():
+    """Seed the database with Gen 3 starters and Brock."""
+    session = get_session()
+
+    hoenn = [
+        {"name": "Treecko", "type1": "Grass", "type2": None, "hp": 40, "attack": 45, "defense": 35, "speed": 70},
+        {"name": "Torchic", "type1": "Fire", "type2": None, "hp": 45, "attack": 60, "defense": 40, "speed": 45},
+        {"name": "Mudkip", "type1": "Water", "type2": None, "hp": 50, "attack": 70, "defense": 50, "speed": 40},
+        {"name": "Geodude", "type1": "Rock", "type2": "Ground", "hp": 40, "attack": 80, "defense": 100, "speed": 20},
+    ]
+
+    for p in hoenn:
+        if not queries.find_pokemon_by_name(session, p["name"]):
+            session.add(Pokemon(**p))
+            click.echo(f"Added {p['name']} to Pokedex.")
+
+    # Brock
+    brock = session.query(Trainer).filter(Trainer.name == "Brock").first()
+    if not brock:
+        brock = Trainer(name="Brock", hometown="Pewter City")
+        session.add(brock)
+        click.echo("Added Brock as a trainer.")
+        session.commit()
+
+        # Brock catches Geodude
+        geodude = queries.find_pokemon_by_name(session, "Geodude")
+        if geodude:
+            queries.catch_pokemon(session, brock.id, geodude.id, level=12)
+            click.echo("Brock caught Geodude!")
+
+    session.commit()
+    click.echo(click.style("✓ Gen 3 (Hoenn) data seeded!", fg="green"))
     session.close()
 
 
