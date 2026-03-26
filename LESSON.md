@@ -80,7 +80,9 @@ Refresh the web UI to see your changes reflected immediately!
 ### Mission 2: Under the Hood (pgAdmin)
 Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 1.  Go to [http://localhost:8080](http://localhost:8080).
-2.  **Login**: `admin@pgadmin.org` / `admin`.
+2.  **Login**: 
+    -   username: `admin@pgadmin.org`
+    -   password: `admin`
 3.  **Connect to Server**:
     -   Use the `Add New Server` Quick Link -OR- Right-click "Servers" > Register > Server. 
     -   (1) **Name**: `pokedex` << *this is the red-box in the `General` tab.*
@@ -93,6 +95,18 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
         ![numbered screenshot of pgAdmin GUI](pg_admin_config.png)
 
 4.  **Explore**: Navigate to `Databases` > `pokedex` > `Schemas` > `public` > `Tables`.
+
+---
+> [!TIP] If you are in Rice's class, You can turn in a screenshot at this point. 
+>
+> Your screenshot should show:
+>    - (1) the contents of the `trainers` table
+>    - (2) your own name, as one of the included trainers
+>
+> See the example screenshot below, for reference. 
+> The only difference, is that **your screenshot should be FULL DESKTOP**.
+
+![Screenshot of pgAdmin4 interface, as example for submisison](perfect_screenshot.png)
 
 ---
 
