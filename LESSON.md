@@ -36,10 +36,12 @@ docker exec -it pokedex_app bash
 python main.py db init
 python main.py db seed
 
+# [OPTIONAL] ---------------------------------
 # To add even more Pokemon and trainers later:
 python main.py db seed2
 python main.py db seed3
 
+# [OPTIONAL] --------------------------------- 
 # If you ever want to start over from scratch:
 python main.py db reset
 ```
