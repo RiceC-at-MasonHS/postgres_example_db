@@ -82,13 +82,16 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 1.  Go to [http://localhost:8080](http://localhost:8080).
 2.  **Login**: `admin@pgadmin.org` / `admin`.
 3.  **Connect to Server**:
-    -   Right-click "Servers" > Register > Server.
-    -   **Name**: Pokedex.
-    -   **Connection tab**:
-        -   **Host**: `db`
-        -   **Maintenance DB**: `pokedex`
-        -   **Username**: `postgres`
-        -   **Password**: `postgres`
+    -   Use the `Add New Server` Quick Link -OR- Right-click "Servers" > Register > Server. 
+    -   (1) **Name**: `pokedex` << *this is the red-box in the `General` tab.*
+    -   (2) **Connection tab**:
+        -   (3) **Host**: `pokedex_db`
+        -   (4) **Maintenance DB**: `pokedex`
+        -   (5) **Username**: `postgres`
+        -   (6) **Password**: `postgres`
+    
+        ![numbered screenshot of pgAdmin GUI](pg_admin_config.png)
+
 4.  **Explore**: Navigate to `Databases` > `pokedex` > `Schemas` > `public` > `Tables`.
 
 ---
