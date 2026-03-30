@@ -38,7 +38,7 @@ This lab demonstrates how different application layers interact with a relationa
 Clone the repository and launch the environment:
 
 ```bash
-git clone https://github.com/RiceC-at-MasonHS/postgres-example-db.git
+git clone https://github.com/RiceC-at-MasonHS/postgres_example_db.git
 cd postgres-example-db
 docker compose up -d
 ```
