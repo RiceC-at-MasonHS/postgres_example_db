@@ -9,6 +9,10 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
+# ============================================================================
+# PHASE 1: CORE MODELS
+# ============================================================================
+
 class Pokemon(Base):
     """
     An entry in the Pokedex.
@@ -71,3 +75,6 @@ class Collection(Base):
 
     def __repr__(self):
         return f"<Collection(trainer='{self.trainer.name}', pokemon='{self.pokemon.name}', nickname='{self.nickname}')>"
+
+# Note: Phase 2 (Moves & Shiny) and Phase 3 (Constraints) are added 
+# via manual SQL migrations during the 'LESSON_ADVANCED' portion of the lab.
