@@ -45,7 +45,7 @@ def trainer_profile(trainer_id):
     # Fetch team with optional columns added during migrations
     # We use raw SQL to ensure we get any columns added after the app started
     team_query = text("""
-        SELECT c.*, p.name as species_name, p.type1, p.hp, p.attack, p.defense
+        SELECT c.*, p.name as species_name, p.type1, p.type2, p.hp, p.attack, p.defense
         FROM collections c
         JOIN pokemon p ON c.pokemon_id = p.id
         WHERE c.trainer_id = :trainer_id
