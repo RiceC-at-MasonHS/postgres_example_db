@@ -46,6 +46,16 @@ python main.py db seed3
 python main.py db reset
 ```
 
+### 💡 Pro Tip: Toggling SQL Logs
+By default, the Pokedex lab "Echoes" every SQL command to the screen. This is great for learning! But if it gets too noisy, you can turn it off:
+```bash
+# To turn logs OFF:
+python main.py db logs --off
+
+# To turn logs ON:
+python main.py db logs --on
+```
+
 ---
 
 ## 🗺️ Your Learning Path

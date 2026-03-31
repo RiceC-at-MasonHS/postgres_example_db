@@ -18,7 +18,11 @@ DATABASE_URL = os.getenv(
 )
 
 # Educational Setting: echo=True shows all generated SQL
-SQL_ECHO = os.getenv("SQL_ECHO", "False").lower() == "true"
+# We check for a '.quiet_sql' file to allow users to toggle this off.
+QUIET_FILE = ".quiet_sql"
+SQL_ECHO = os.getenv("SQL_ECHO", "True").lower() == "true"
+if os.path.exists(QUIET_FILE):
+    SQL_ECHO = False
 
 engine = create_engine(
     DATABASE_URL,

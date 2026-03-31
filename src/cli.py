@@ -26,6 +26,25 @@ def db():
 
 
 @db.command()
+@click.option("--on/--off", default=True, help="Turn SQL logging on or off.")
+def logs(on):
+    """Toggle the detailed SQL logs (useful for learning or debugging)."""
+    import os
+    quiet_file = ".quiet_sql"
+    
+    if on:
+        if os.path.exists(quiet_file):
+            os.remove(quiet_file)
+        click.echo(click.style("✓ SQL Logging enabled! (Detailed database output is ON)", fg="green"))
+    else:
+        with open(quiet_file, "w") as f:
+            f.write("quiet")
+        click.echo(click.style("✓ SQL Logging disabled! (Detailed database output is OFF)", fg="yellow"))
+    
+    click.echo("Tip: Run 'pokemon list' to see the difference.")
+
+
+@db.command()
 def init():
     """Initialize the base database schema."""
     click.echo("Initializing database...")
