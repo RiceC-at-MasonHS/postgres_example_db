@@ -81,8 +81,23 @@ Use your `lab query` tool to see if the new column exists:
 ```bash
 python main.py lab query "SELECT id, nickname, is_shiny FROM collections;"
 ```
-*Note: You can even try to make a Pokemon shiny manually:*
-`python main.py lab query "UPDATE collections SET is_shiny = True WHERE id = <id>;"`
+
+### 🧪 Mission 3.2: Toggling Shiny Status
+Now that the database has a `is_shiny` column, let's learn how to update specific rows in two different ways!
+
+**Option A: The Python CLI way**
+We've added a new command specifically for this:
+```bash
+# Find a collection_id from your team list first!
+python main.py trainer shiny <collection_id> --on
+```
+
+**Option B: The Raw SQL way**
+Try to do the exact same thing using only the database query tool:
+```bash
+python main.py lab query "UPDATE collections SET is_shiny = TRUE WHERE id = <collection_id>;"
+```
+*Tip: After running either command, refresh the Web UI! You should see a "✨ Shiny" badge appear on your Pokemon's card.*
 
 ---
 

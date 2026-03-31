@@ -421,6 +421,29 @@ def team(trainer_id: int):
     session.close()
 
 
+@trainer.command(name="shiny")
+@click.argument("collection_id", type=int)
+@click.option("--on/--off", default=True, help="Set the shiny status.")
+def toggle_shiny(collection_id: int, on: bool):
+    """Toggle the 'Shiny' status of a caught Pokemon."""
+    from sqlalchemy import text
+    session = get_session()
+    
+    try:
+        status = "TRUE" if on else "FALSE"
+        # We use raw SQL here because the ORM model doesn't know about 'is_shiny' yet!
+        session.execute(text(f"UPDATE collections SET is_shiny = {status} WHERE id = :id"), {"id": collection_id})
+        session.commit()
+        
+        word = "Shiny ✨" if on else "Normal"
+        click.echo(click.style(f"✓ Pokemon #{collection_id} is now {word}!", fg="cyan" if on else "white"))
+    except Exception as e:
+        click.echo(click.style(f"✗ Error: {str(e)}", fg="red"))
+        click.echo("Hint: Did you run 'python main.py db migrate' yet?")
+    finally:
+        session.close()
+
+
 @trainer.command(name="level-up")
 @click.argument("collection_id", type=int)
 @click.option("--by", default=1, help="Number of levels to increase")
