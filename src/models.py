@@ -66,7 +66,7 @@ class Collection(Base):
     trainer_id = Column(Integer, ForeignKey("trainers.id", ondelete="CASCADE"), nullable=False)
     pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="CASCADE"), nullable=False)
     nickname = Column(String(100), nullable=True)
-    level = Column(Integer, default=1)
+    level = Column(Integer, default=10)
     caught_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationships
