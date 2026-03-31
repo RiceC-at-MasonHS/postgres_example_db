@@ -123,8 +123,24 @@ python main.py trainer add
 **Attempt B: The Impossible Level**
 Try to set a Pokemon's level to 999.
 ```bash
-python main.py lab query "UPDATE collections SET level = 999 WHERE id = 1;"
+python main.py lab query "UPDATE collections SET level = 999 WHERE id = 2;"
+# we made an assumption for the <collection_id> above, you may need to change it
 ```
+ [!TIP] 
+> If you are in Rice's class, You can turn in a screenshot at this point. 
+>
+> Right-click on the `collections` table, and `View/Edit Data` then `All Rows`.
+>
+> Your screenshot should show:
+>    - (1) the contents of the `collections` table
+>    - (2) your own name, as the name of a Pokemon (shown as "Comet")
+>    - (3) a pokemon where the `is_shiny` column has a value of `true`
+>
+> See the example screenshot below, for reference. 
+> The only difference, is that **your screenshot should be FULL DESKTOP**.
+
+![Screenshot of pgAdmin4 interface, as example for submisison](advanced_turnin.png)
+
 
 ---
 
