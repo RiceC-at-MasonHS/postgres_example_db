@@ -178,11 +178,11 @@ def seed3():
 
 @db.command()
 def migrate():
-    """[Phase 2] Add moves table and is_shiny column to collections table."""
+    """[ADV: Phase 3] Add moves table and is_shiny column to collections table."""
     from sqlalchemy import text
     session = get_session()
     
-    click.echo("Executing Phase 2 Migration...")
+    click.echo("Executing Advanced Phase 3 Migration...")
     
     try:
         # Add is_shiny to collections table
@@ -202,7 +202,7 @@ def migrate():
         click.echo("✓ Created 'moves' table.")
         
         session.commit()
-        click.echo(click.style("✓ Phase 2 Migration successful!", fg="green"))
+        click.echo(click.style("✓ Advanced Phase 3 Migration successful!", fg="green"))
     except Exception as e:
         session.rollback()
         click.echo(click.style(f"✗ Migration failed: {str(e)}", fg="red"))
@@ -216,11 +216,11 @@ def migrate():
 
 @db.command()
 def secure():
-    """[Phase 3] Add database-level constraints for data integrity."""
+    """[ADV: Phase 4] Add database-level constraints for data integrity."""
     from sqlalchemy import text
     session = get_session()
     
-    click.echo("Executing Phase 3 Security Hardening...")
+    click.echo("Executing Advanced Phase 4 Security Hardening...")
     
     try:
         # 1. Unique name for Trainers
@@ -233,7 +233,7 @@ def secure():
         click.echo("✓ Added CHECK constraint to pokemon levels (1-100).")
         
         session.commit()
-        click.echo(click.style("✓ Phase 3 Security complete!", fg="green"))
+        click.echo(click.style("✓ Advanced Phase 4 Security complete!", fg="green"))
     except Exception as e:
         session.rollback()
         click.echo(click.style(f"✗ Security hardening failed: {str(e)}", fg="red"))
