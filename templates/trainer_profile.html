@@ -26,6 +26,9 @@
                         <div class="d-flex justify-content-between mb-2 align-items-center">
                             <span class="text-muted small fw-bold">LVL {{ member.level }}</span>
                             <div>
+                                {% if member.is_shiny %}
+                                <span class="badge bg-warning text-dark rounded-pill me-1" title="Shiny Pokemon!">✨ Shiny</span>
+                                {% endif %}
                                 <span class="type-badge small type-{{ member.type1 }}">{{ member.type1 }}</span>
                             </div>
                         </div>
