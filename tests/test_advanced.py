@@ -12,10 +12,36 @@ from src import queries
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_database():
-    """Initializes the base database schema."""
+    """Initializes the base database schema and handles manual cleanup."""
+    # PRE-CLEANUP: If a previous run crashed, 'moves' might still exist 
+    # and prevent drop_db() from working due to foreign keys.
+    session = get_session()
+    try:
+        session.execute(text("DROP TABLE IF EXISTS moves CASCADE;"))
+        session.commit()
+    except Exception:
+        session.rollback()
+    finally:
+        session.close()
+
     drop_db()
     init_db()
     yield
+    #------------------------------------------------------------------------------
+    # MANUAL CLEANUP: Since SQLAlchemy doesn't know about these 
+    # manual SQL changes, we must drop them ourselves!
+    session = get_session()
+    try:
+        session.execute(text("DROP TABLE IF EXISTS moves CASCADE;"))
+        session.execute(text("ALTER TABLE collections DROP COLUMN IF EXISTS is_shiny;"))
+        session.execute(text("ALTER TABLE trainers DROP CONSTRAINT IF EXISTS unique_trainer_name;"))
+        session.execute(text("ALTER TABLE collections DROP CONSTRAINT IF EXISTS check_level_range;"))
+        session.commit()
+    except Exception:
+        session.rollback()
+    finally:
+        session.close()
+    #------------------------------------------------------------------------------
     drop_db()
 
 @pytest.fixture
