@@ -4,6 +4,7 @@ A teaching tool designed to demonstrate relational database concepts through a P
 
 > [!IMPORTANT]
 > **Students & Learners:** For the guided lab instructions and missions, please see [**LESSON.md**](./LESSON.md).
+> ------------------------ Then proceed onto [**LESSON_ADVANCED.md**](./LESSON_ADVANCED.md) if directed to do so.
 
 ---
 
