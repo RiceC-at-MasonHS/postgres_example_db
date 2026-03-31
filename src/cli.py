@@ -402,12 +402,12 @@ def team(trainer_id: int):
     if not team_members:
         click.echo("(No Pokemon caught yet)")
     else:
-        click.echo(f"{'Species':<15} {'Nickname':<15} {'Level':<5} {'Types':<20}")
+        click.echo(f"{'Collection ID':<15} {'Species':<15} {'Nickname':<15} {'Level':<5} {'Types':<20}")
         click.echo("-" * 60)
         for m in team_members:
             p = m.pokemon
             types = f"{p.type1}{'/' + p.type2 if p.type2 else ''}"
-            click.echo(f"{p.name:<15} {m.nickname or '-':<15} {m.level:<5} {types:<20}")
+            click.echo(f"{m.id:<15} {p.name:<15} {m.nickname or '-':<15} {m.level:<5} {types:<20}")
 
     click.echo(f"{'='*60}\n")
     session.close()
