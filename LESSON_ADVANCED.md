@@ -14,7 +14,7 @@ Welcome, Trainer! You've learned the basics of catching Pokemon. Now, it's time 
 **CRUD** stands for **C**reate, **R**ead, **U**pdate, and **D**elete. In this phase, you will perform the full cycle twice: once in the Web GUI and once in the CLI.
 
 ### 🕵️ Mission 1.1: CRUD in *mostly* the Web GUI
-0.  Connect to the docker container's terminal using: `docker exec -it pokedex_app bash`
+0.  Connect to the docker container's terminal using: `docker exec -it pokedex_app bash` and start the database, if needed: `python main.py db init && python main.py db seed`
 1.  **Create:** Use the CLI command `python main.py trainer add` to create a trainer for yourself (if youdon't have one from the previous section). Then use `python main.py catch` to catch a Pokemon.
 2.  **Read:** Open the Web UI ([http://localhost:5000/trainers](http://localhost:5000/trainers)), find your profile, and click it to see your new team member.
 3.  **Update:** Click the **"Level Up!"** button on your Pokemon's card. Watch the level increase!
