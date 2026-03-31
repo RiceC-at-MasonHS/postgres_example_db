@@ -16,7 +16,7 @@ def cli():
 
 
 # ============================================================================
-# DATABASE MANAGEMENT COMMANDS
+# PHASE 1: DATABASE MANAGEMENT COMMANDS
 # ============================================================================
 
 @cli.group()
@@ -27,7 +27,7 @@ def db():
 
 @db.command()
 def init():
-    """Initialize the database schema."""
+    """Initialize the base database schema."""
     click.echo("Initializing database...")
     init_db()
 
@@ -150,6 +150,76 @@ def seed3():
     session.commit()
     click.echo(click.style("✓ Gen 3 (Hoenn) data seeded!", fg="green"))
     session.close()
+
+
+
+# ============================================================================
+# PHASE 2: SCHEMA EVOLUTION (MIGRATIONS)
+# ============================================================================
+
+@db.command()
+def migrate():
+    """[Phase 2] Add moves table and is_shiny column to collections table."""
+    from sqlalchemy import text
+    session = get_session()
+    
+    click.echo("Executing Phase 2 Migration...")
+    
+    try:
+        # Add is_shiny to collections table
+        session.execute(text("ALTER TABLE collections ADD COLUMN is_shiny BOOLEAN DEFAULT FALSE;"))
+        click.echo("✓ Added 'is_shiny' column to collections table.")
+
+        # Create moves table
+        session.execute(text("""
+            CREATE TABLE moves (
+                id SERIAL PRIMARY KEY,
+                pokemon_id INTEGER REFERENCES pokemon(id) ON DELETE CASCADE,
+                name VARCHAR(100) NOT NULL,
+                type VARCHAR(50) NOT NULL,
+                power INTEGER DEFAULT 40
+            );
+        """))
+        click.echo("✓ Created 'moves' table.")
+        
+        session.commit()
+        click.echo(click.style("✓ Phase 2 Migration successful!", fg="green"))
+    except Exception as e:
+        session.rollback()
+        click.echo(click.style(f"✗ Migration failed: {str(e)}", fg="red"))
+    finally:
+        session.close()
+
+
+# ============================================================================
+# PHASE 3: DATA INTEGRITY (CONSTRAINTS)
+# ============================================================================
+
+@db.command()
+def secure():
+    """[Phase 3] Add database-level constraints for data integrity."""
+    from sqlalchemy import text
+    session = get_session()
+    
+    click.echo("Executing Phase 3 Security Hardening...")
+    
+    try:
+        # 1. Unique name for Trainers
+        session.execute(text("ALTER TABLE trainers ADD CONSTRAINT unique_trainer_name UNIQUE (name);"))
+        click.echo("✓ Added UNIQUE constraint to trainer names.")
+
+        # 2. Level range for Collections (must be 1-100)
+        # Note: Postgres syntax for adding check constraint
+        session.execute(text("ALTER TABLE collections ADD CONSTRAINT check_level_range CHECK (level >= 1 AND level <= 100);"))
+        click.echo("✓ Added CHECK constraint to pokemon levels (1-100).")
+        
+        session.commit()
+        click.echo(click.style("✓ Phase 3 Security complete!", fg="green"))
+    except Exception as e:
+        session.rollback()
+        click.echo(click.style(f"✗ Security hardening failed: {str(e)}", fg="red"))
+    finally:
+        session.close()
 
 
 # ============================================================================
@@ -322,6 +392,85 @@ def team(trainer_id: int):
 
     click.echo(f"{'='*60}\n")
     session.close()
+
+
+@trainer.command(name="level-up")
+@click.argument("collection_id", type=int)
+@click.option("--by", default=1, help="Number of levels to increase")
+def level_up(collection_id: int, by: int):
+    """Increase a Pokemon's level."""
+    session = get_session()
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    
+    if not record:
+        click.echo(click.style("✗ Collection record not found!", fg="red"))
+        session.close()
+        return
+
+    new_level = record.level + by
+    queries.update_collection_level(session, collection_id, new_level)
+    
+    click.echo(click.style(f"✓ {record.nickname or record.pokemon.name} leveled up to {new_level}!", fg="green"))
+    session.close()
+
+
+@trainer.command(name="release")
+@click.argument("collection_id", type=int)
+def release(collection_id: int):
+    """Release a Pokemon from a trainer's collection."""
+    session = get_session()
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    
+    if not record:
+        click.echo(click.style("✗ Collection record not found!", fg="red"))
+        session.close()
+        return
+
+    name = record.nickname or record.pokemon.name
+    if click.confirm(f"Are you sure you want to release {name}?"):
+        queries.delete_collection_record(session, collection_id)
+        click.echo(click.style(f"✓ {name} was released into the wild.", fg="green"))
+    
+    session.close()
+
+
+@cli.group()
+def lab():
+    """Advanced Lab tools for manual SQL and schema exploration."""
+    pass
+
+
+@lab.command(name="query")
+@click.argument("sql_string")
+def manual_query(sql_string: str):
+    """Execute a raw SQL query and see the results (STRICTLY FOR LEARNING)."""
+    from sqlalchemy import text
+    session = get_session()
+    
+    try:
+        result = session.execute(text(sql_string))
+        
+        # If it's a SELECT (has rows)
+        if result.returns_rows:
+            rows = result.fetchall()
+            if not rows:
+                click.echo("Query returned 0 rows.")
+            else:
+                # Print column headers
+                click.echo(f"\n{click.style(' | '.join(result.keys()), bold=True, fg='cyan')}")
+                click.echo("-" * 40)
+                for row in rows:
+                    click.echo(" | ".join(str(val) for val in row))
+                click.echo(f"\nTotal: {len(rows)} results.\n")
+        else:
+            # For UPDATE/DELETE/INSERT
+            session.commit()
+            click.echo(click.style(f"✓ Command executed successfully. Rows affected: {result.rowcount}", fg="green"))
+            
+    except Exception as e:
+        click.echo(click.style(f"✗ SQL Error: {str(e)}", fg="red"))
+    finally:
+        session.close()
 
 
 # ============================================================================
