@@ -101,3 +101,21 @@ Try to set a Pokemon's level to 999.
 ```bash
 python main.py lab query "UPDATE collections SET level = 999 WHERE id = 1;"
 ```
+
+---
+
+## Phase 5: Automated Testing
+
+Professional developers don't just test things by hand; they write scripts to do it for them. We've created a suite of **Advanced Tests** that verify everything you've learned in this lab.
+
+### 🧪 Mission 5.1: Run the Advanced Tests
+Run the following command to see if your database passes all the missions:
+
+```bash
+docker compose run --rm app pytest tests/test_advanced.py
+```
+
+These tests will:
+1.  Verify your **Update** and **Delete** logic.
+2.  Test that your **Schema Migration** (adding columns and tables) works.
+3.  Confirm that your **Data Integrity** rules (Constraints) are correctly blocking bad data.
