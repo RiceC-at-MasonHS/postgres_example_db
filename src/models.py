@@ -30,6 +30,14 @@ class Pokemon(Base):
     speed = Column(Integer, default=50)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
+    # -----------------------------------------------------------------------
+    # At the top of the file, add `CheckConstraint` as a sqlalchemy import
+    # Fix the failing-test with a table-arg here:
+
+
+
+    # -----------------------------------------------------------------------
+
     # Relationship to collections (which trainers have this species)
     collections = relationship("Collection", back_populates="pokemon", cascade="all, delete-orphan")
 
