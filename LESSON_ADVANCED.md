@@ -52,10 +52,11 @@ List only the **names** of Pokemon that have an **attack higher than 60**, order
 List every trainer's name alongside the nickname of the Pokemon they've caught.
 *   **Hint:** 
     ```sql
-    SELECT trainers.name, collections.nickname 
+    SELECT trainers.name, collections.nickname, collections.level 
     FROM trainers 
     JOIN collections ON trainers.id = collections.trainer_id;
     ```
+Using this skill: can you also show the level of the pokemon? How about the species (from the `pokemon` table)?
 
 ---
 
