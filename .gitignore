@@ -32,3 +32,4 @@ venv.bak/
 .pytest_cache/
 *.db
 curriculum_*.json
+.quiet_sql
