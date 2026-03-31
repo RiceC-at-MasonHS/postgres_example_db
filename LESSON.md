@@ -94,11 +94,13 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
     
         ![numbered screenshot of pgAdmin GUI](pg_admin_config.png)
 
-4.  **Explore**: Navigate to `Databases` > `pokedex` > `Schemas` > `public` > `Tables`.
+4.  **Explore**: Navigate to `Servers (1)` > `pokedex` > `Databases (2)` > `pokedex` > `Schemas` > `public` > `Tables`.
 
 ---
 > [!TIP] 
 > If you are in Rice's class, You can turn in a screenshot at this point. 
+>
+> Right-click on the `trainers` table, and `View/Edit Data` then `All Rows`.
 >
 > Your screenshot should show:
 >    - (1) the contents of the `trainers` table
@@ -115,17 +117,27 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 
 Database integrity is crucial. We use **tests** to make sure our code doesn't accidentally break the rules of our database.
 
-To run the tests:
+To run the basic tests:
 ```bash
-docker compose run --rm test
+docker compose run --rm app pytest tests/test_pokedex.py
 ```
 
 ### 🛠️ Your Assignment: Fix the Bug!
 We have a bug in our system: **Pokemon can be created with negative Attack points!** This shouldn't be allowed in a fair tournament.
 
-1.  Open `tests/test_pokedex.py`.
+1.  Open [`tests/test_pokedex.py`](https://github.com/RiceC-at-MasonHS/postgres_example_db/blob/63ef3034f8bd630d0498c80c0a2c11f96edfc836/tests/test_pokedex.py#L71) on GitHub to see this test.
 2.  Find the test case that is currently failing.
 3.  Modify `src/models.py` or the CLI logic to ensure Attack values are always positive.
+```bash
+# Stop all the containers to change the code
+docker compose down
+# Make your edits, check the solution below, if you're a cheater 😉
+nano src/models.py
+#rebuild the containers with your code change
+docker compose up --build -d
+# Run the tests again to see that your patch fixes things!
+docker compose run --rm app pytest tests/test_pokedex.py
+```
 
 <details>
 <summary><b>💡 Check your answer (Spoiler Alert!)</b></summary>
