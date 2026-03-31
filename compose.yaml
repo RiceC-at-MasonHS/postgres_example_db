@@ -27,6 +27,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "admin"
     ports:
       - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       db:
         condition: service_healthy
@@ -95,6 +97,7 @@ services:
 
 volumes:
   postgres_data:
+  pgadmin_data:
 
 networks:
   pokedex_net:
