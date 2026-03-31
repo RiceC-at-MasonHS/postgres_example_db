@@ -395,21 +395,29 @@ def team(trainer_id: int):
 
     team_members = queries.get_trainer_team(session, trainer_id)
 
-    click.echo(f"\n{'='*60}")
+    click.echo(f"\n{'='*80}")
     click.echo(f"Team for {trainer.name} (from {trainer.hometown or 'Unknown'})")
-    click.echo(f"{'='*60}")
+    click.echo(f"{'='*80}")
 
     if not team_members:
         click.echo("(No Pokemon caught yet)")
     else:
-        click.echo(f"{'Collection ID':<15} {'Species':<15} {'Nickname':<15} {'Level':<5} {'Types':<20}")
-        click.echo("-" * 60)
+        click.echo(f"{'Collection ID':<15} {'Species':<12} {'Nickname':<12} {'LVL':<5} {'HP':<4} {'ATK':<4} {'DEF':<4} {'Types':<15}")
+        click.echo("-" * 80)
         for m in team_members:
             p = m.pokemon
             types = f"{p.type1}{'/' + p.type2 if p.type2 else ''}"
-            click.echo(f"{m.id:<15} {p.name:<15} {m.nickname or '-':<15} {m.level:<5} {types:<20}")
 
-    click.echo(f"{'='*60}\n")
+            # Simple 5% stat boost per level: Base * (1 + (Level-1) * 0.05)
+            multiplier = 1 + (m.level - 1) * 0.05
+            hp = int(p.hp * multiplier)
+            atk = int(p.attack * multiplier)
+            dfe = int(p.defense * multiplier)
+
+            click.echo(f"{m.id:<15} {p.name:<12} {m.nickname or '-':<12} {m.level:<5} {hp:<4} {atk:<4} {dfe:<4} {types:<15}")
+
+
+    click.echo(f"{'='*80}\n")
     session.close()
 
 

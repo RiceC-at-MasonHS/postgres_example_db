@@ -43,13 +43,17 @@ def trainer_profile(trainer_id):
         return "Trainer not found", 404
 
     # Fetch team with optional columns added during migrations
-    # We use raw SQL to ensure we get any columns added after the app started
+    # We calculate 'Effective Stats' based on level: Base * (1 + (Level-1) * 0.05)
     team_query = text("""
-        SELECT c.*, p.name as species_name, p.type1, p.type2, p.hp, p.attack, p.defense
+        SELECT c.*, p.name as species_name, p.type1, p.type2,
+               CAST(p.hp * (1 + (c.level - 1) * 0.05) AS INTEGER) as hp,
+               CAST(p.attack * (1 + (c.level - 1) * 0.05) AS INTEGER) as attack,
+               CAST(p.defense * (1 + (c.level - 1) * 0.05) AS INTEGER) as defense
         FROM collections c
         JOIN pokemon p ON c.pokemon_id = p.id
         WHERE c.trainer_id = :trainer_id
     """)
+
     team_rows = session.execute(team_query, {"trainer_id": trainer_id}).fetchall()
     
     # Convert to a list of dicts for easy template access
