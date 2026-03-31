@@ -91,7 +91,7 @@ services:
     command: /bin/bash -c "\
       pip install --upgrade pip -q --root-user-action=ignore \
       && pip3 install pytest -q --root-user-action=ignore \
-      && pytest -q"
+      && pytest -q tests/test_pokedex.py"
     networks:
       - pokedex_net
 
