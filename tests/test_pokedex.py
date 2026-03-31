@@ -70,13 +70,13 @@ def test_catch_mechanic(session):
 
 def test_pokemon_attack_should_be_positive(session):
     """
-    FAILURE TEST: Currently, our database allows negative attack points!
-    This test is EXPECTED TO FAIL until students fix it.
+    TEST: Verify that the database protects itself from negative attack points.
+    If a CheckConstraint is active, this test will PASS when an exception is raised.
     """
     negative_p = Pokemon(name="Glitch", type1="Ghost", attack=-10)
     session.add(negative_p)
-    session.commit()
-
-    # If the database allows this, it is technically a bug in our game rules.
-    # We want this test to fail when a negative attack value is provided.
-    assert negative_p.attack >= 0, f"Pokemon {negative_p.name} has negative attack: {negative_p.attack}!"
+    
+    # We expect this to raise an IntegrityError or similar exception 
+    # if the database constraint is working!
+    with pytest.raises(Exception):
+        session.commit()

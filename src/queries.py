@@ -62,3 +62,20 @@ def catch_pokemon(session: Session, trainer_id: int, pokemon_id: int, nickname: 
     session.add(new_catch)
     session.commit()
     return new_catch
+
+def update_collection_level(session: Session, collection_id: int, new_level: int) -> Optional[Collection]:
+    """Update the level of a caught Pokemon."""
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    if record:
+        record.level = new_level
+        session.commit()
+    return record
+
+def delete_collection_record(session: Session, collection_id: int) -> bool:
+    """Remove a Pokemon from a trainer's collection (the 'Release' mechanic)."""
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    if record:
+        session.delete(record)
+        session.commit()
+        return True
+    return False

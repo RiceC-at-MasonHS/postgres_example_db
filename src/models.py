@@ -9,6 +9,10 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
+# ============================================================================
+# PHASE 1: CORE MODELS
+# ============================================================================
+
 class Pokemon(Base):
     """
     An entry in the Pokedex.
@@ -25,6 +29,14 @@ class Pokemon(Base):
     defense = Column(Integer, default=50)
     speed = Column(Integer, default=50)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    # -----------------------------------------------------------------------
+    # At the top of the file, add `CheckConstraint` as a sqlalchemy import
+    # Fix the failing-test with a table-arg here:
+
+
+
+    # -----------------------------------------------------------------------
 
     # Relationship to collections (which trainers have this species)
     collections = relationship("Collection", back_populates="pokemon", cascade="all, delete-orphan")
@@ -62,7 +74,7 @@ class Collection(Base):
     trainer_id = Column(Integer, ForeignKey("trainers.id", ondelete="CASCADE"), nullable=False)
     pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="CASCADE"), nullable=False)
     nickname = Column(String(100), nullable=True)
-    level = Column(Integer, default=1)
+    level = Column(Integer, default=10)
     caught_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationships
@@ -71,3 +83,6 @@ class Collection(Base):
 
     def __repr__(self):
         return f"<Collection(trainer='{self.trainer.name}', pokemon='{self.pokemon.name}', nickname='{self.nickname}')>"
+
+# Note: Phase 2 (Moves & Shiny) and Phase 3 (Constraints) are added 
+# via manual SQL migrations during the 'LESSON_ADVANCED' portion of the lab.

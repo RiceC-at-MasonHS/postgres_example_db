@@ -27,6 +27,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "admin"
     ports:
       - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       db:
         condition: service_healthy
@@ -89,12 +91,13 @@ services:
     command: /bin/bash -c "\
       pip install --upgrade pip -q --root-user-action=ignore \
       && pip3 install pytest -q --root-user-action=ignore \
-      && pytest -q"
+      && pytest -q tests/test_pokedex.py"
     networks:
       - pokedex_net
 
 volumes:
   postgres_data:
+  pgadmin_data:
 
 networks:
   pokedex_net:

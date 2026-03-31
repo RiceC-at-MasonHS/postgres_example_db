@@ -36,13 +36,52 @@ def trainers():
 @app.route('/trainer/<int:trainer_id>')
 def trainer_profile(trainer_id):
     """View a specific trainer and their team."""
+    from sqlalchemy import text
     session = get_db()
     trainer = queries.get_trainer_by_id(session, trainer_id)
     if not trainer:
         return "Trainer not found", 404
 
-    team = queries.get_trainer_team(session, trainer_id)
+    # Fetch team with optional columns added during migrations
+    # We calculate 'Effective Stats' based on level: Base * (1 + (Level-1) * 0.05)
+    team_query = text("""
+        SELECT c.*, p.name as species_name, p.type1, p.type2,
+               CAST(p.hp * (1 + (c.level - 1) * 0.05) AS INTEGER) as hp,
+               CAST(p.attack * (1 + (c.level - 1) * 0.05) AS INTEGER) as attack,
+               CAST(p.defense * (1 + (c.level - 1) * 0.05) AS INTEGER) as defense
+        FROM collections c
+        JOIN pokemon p ON c.pokemon_id = p.id
+        WHERE c.trainer_id = :trainer_id
+    """)
+
+    team_rows = session.execute(team_query, {"trainer_id": trainer_id}).fetchall()
+    
+    # Convert to a list of dicts for easy template access
+    team = []
+    for row in team_rows:
+        team.append(row._asdict())
+
     return render_template('trainer_profile.html', trainer=trainer, team=team)
+
+@app.route('/collection/level-up/<int:collection_id>', methods=['POST'])
+def level_up(collection_id):
+    """Increase a Pokemon's level by 1."""
+    session = get_db()
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    if record:
+        queries.update_collection_level(session, collection_id, record.level + 1)
+    return redirect(url_for('trainer_profile', trainer_id=record.trainer_id))
+
+@app.route('/collection/release/<int:collection_id>', methods=['POST'])
+def release_pokemon(collection_id):
+    """Release a Pokemon from a trainer's collection."""
+    session = get_db()
+    record = session.query(Collection).filter(Collection.id == collection_id).first()
+    if record:
+        trainer_id = record.trainer_id
+        queries.delete_collection_record(session, collection_id)
+        return redirect(url_for('trainer_profile', trainer_id=trainer_id))
+    return redirect(url_for('trainers'))
 
 
 if __name__ == '__main__':
