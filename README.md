@@ -4,6 +4,7 @@ A teaching tool designed to demonstrate relational database concepts through a P
 
 > [!IMPORTANT]
 > **Students & Learners:** For the guided lab instructions and missions, please see [**LESSON.md**](./LESSON.md).
+> 
 > ------------------------ Then proceed onto [**LESSON_ADVANCED.md**](./LESSON_ADVANCED.md) if directed to do so.
 
 ---
@@ -40,7 +41,7 @@ Clone the repository and launch the environment:
 
 ```bash
 git clone https://github.com/RiceC-at-MasonHS/postgres_example_db.git
-cd postgres-example-db
+cd postgres_example_db
 docker compose up -d
 ```
 
