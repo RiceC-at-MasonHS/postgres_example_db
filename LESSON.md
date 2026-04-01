@@ -115,9 +115,24 @@ Now that you know how to query the database, let's look at how **not** to do it.
     *   **The "Normal" way**: Search for `Pikachu` using the **SECURED** mode.
     *   **The "Vulnerable" way**: Switch to **NOT SECURED** and type `' OR '1'='1`. 
         *   *What happened?* You just performed a **SQL Injection**! By closing the single quote and adding an `OR` condition that is always true (`1=1`), you tricked the database into returning every single record.
-    *   **The "Barely Secured" way**: This mode tries to "sanitize" your input by escaping single quotes. Can you find a way to break it? (Hint: It's much harder, but still potentially vulnerable to other types of attacks).
 
-**Why it matters:** In a real application, a SQL injection could allow an attacker to bypass login screens, steal user data, or even delete entire tables! Always use **Parameter Binding** (the "SECURED" mode) in your code.
+#### How the Security Levels Work:
+
+| Level | Strategy | How it works (or doesn't) |
+| :--- | :--- | :--- |
+| **NOT SECURED** | `f"SELECT ... '{input}'"` | **Dangerous.** It treats your input as part of the SQL command itself. If you type `' OR '1'='1`, the database sees: `WHERE name = '' OR '1'='1'`, which is always true. |
+| **BARELY SECURED** | `input.replace("'", "''")` | **Brittle.** This "manual sanitization" tries to fix the input by doubling quotes. While it stops the simplest attacks, it's easily bypassed by other tricks (like backslashes or different character encodings) and doesn't scale. |
+| **SECURED** | **Parameter Binding** | **Professional.** This is the gold standard. Instead of building a string, we send the query and the data to the database *separately*. |
+
+#### 🧠 Deep Dive: How does "Secured" actually work?
+When you use the **SECURED** mode, the application sends a template to the database first:
+`SELECT * FROM pokemon WHERE name = :name`
+
+The database "pre-compiles" this command. Then, we send the data (e.g., `' OR '1'='1`) in a separate packet. The database treats that entire packet as **data only**. It never tries to run the data as a command. 
+
+Even if you type a malicious command, the database just looks for a Pokemon whose literal name is `' OR '1'='1`. Since no such Pokemon exists, it returns zero results safely.
+
+**Why it matters:** In a real application, a SQL injection could allow an attacker to bypass login screens, steal user data, or even delete entire tables! Always use **Parameter Binding** in your code.
 
 ---
 > [!TIP] 
