@@ -107,6 +107,19 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 4.  **Explore**: Navigate to `Servers (1)` > `pokedex` > `Databases (2)` > `pokedex` > `Schemas` > `public` > `Tables`.
 
 ---
+
+### Mission 3: SQL Security (The Lab) 🛡️
+Now that you know how to query the database, let's look at how **not** to do it.
+1.  Go to the **Security Lab** in the web interface ([http://localhost:5000/search](http://localhost:5000/search)).
+2.  Try the following experiments:
+    *   **The "Normal" way**: Search for `Pikachu` using the **SECURED** mode.
+    *   **The "Vulnerable" way**: Switch to **NOT SECURED** and type `' OR '1'='1`. 
+        *   *What happened?* You just performed a **SQL Injection**! By closing the single quote and adding an `OR` condition that is always true (`1=1`), you tricked the database into returning every single record.
+    *   **The "Barely Secured" way**: This mode tries to "sanitize" your input by escaping single quotes. Can you find a way to break it? (Hint: It's much harder, but still potentially vulnerable to other types of attacks).
+
+**Why it matters:** In a real application, a SQL injection could allow an attacker to bypass login screens, steal user data, or even delete entire tables! Always use **Parameter Binding** (the "SECURED" mode) in your code.
+
+---
 > [!TIP] 
 > If you are in Rice's class, You can turn in a screenshot at this point. 
 >

@@ -33,6 +33,55 @@ def trainers():
     trainers_list = queries.list_all_trainers(session)
     return render_template('trainers.html', trainers=trainers_list)
 
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    """Security Lab: Demonstrate SQL Injection vulnerabilities."""
+    from sqlalchemy import text
+    session = get_db()
+    results = []
+    query_to_show = ""
+    search_term = ""
+    security_level = "secured"
+
+    if request.method == 'POST':
+        search_term = request.form.get('query', '')
+        security_level = request.form.get('security_level', 'secured')
+        
+        if security_level == 'insecure':
+            # DANGEROUS: Direct string concatenation
+            query_to_show = f"SELECT * FROM pokemon WHERE name = '{search_term}'"
+            try:
+                # We use session.execute(text(...)) which still allows injection if the string itself is tainted
+                result_proxy = session.execute(text(query_to_show))
+                results = [row._asdict() for row in result_proxy]
+            except Exception as e:
+                results = [{"error": str(e)}]
+
+        elif security_level == 'barely_secured':
+            # DANGEROUS: Weak manual escaping
+            sanitized = search_term.replace("'", "''")
+            query_to_show = f"SELECT * FROM pokemon WHERE name = '{sanitized}'"
+            try:
+                result_proxy = session.execute(text(query_to_show))
+                results = [row._asdict() for row in result_proxy]
+            except Exception as e:
+                results = [{"error": str(e)}]
+
+        else:  # secured
+            # SAFE: Parameter binding
+            query_to_show = "SELECT * FROM pokemon WHERE name = :name"
+            try:
+                result_proxy = session.execute(text(query_to_show), {"name": search_term})
+                results = [row._asdict() for row in result_proxy]
+            except Exception as e:
+                results = [{"error": str(e)}]
+
+    return render_template('search.html', 
+                           results=results, 
+                           query_to_show=query_to_show, 
+                           search_term=search_term,
+                           security_level=security_level)
+
 @app.route('/trainer/<int:trainer_id>')
 def trainer_profile(trainer_id):
     """View a specific trainer and their team."""

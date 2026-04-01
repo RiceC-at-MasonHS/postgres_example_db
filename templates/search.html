@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col text-center">
+        <h1 class="display-4">Security Lab: SQL Injection</h1>
+        <p class="lead text-muted">Experiment with different ways of querying the database and see why security matters.</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="query" class="form-label">Search Pokemon by Name</label>
+                        <input type="text" class="form-control" id="query" name="query" value="{{ search_term }}" placeholder="e.g. Pikachu">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Security Level</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="security_level" id="level1" value="insecure" {% if security_level == 'insecure' %}checked{% endif %}>
+                            <label class="form-check-label text-danger fw-bold" for="level1">NOT SECURED</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="security_level" id="level2" value="barely_secured" {% if security_level == 'barely_secured' %}checked{% endif %}>
+                            <label class="form-check-label text-warning fw-bold" for="level2">BARELY SECURED</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="security_level" id="level3" value="secured" {% if security_level == 'secured' or not security_level %}checked{% endif %}>
+                            <label class="form-check-label text-success fw-bold" for="level3">SECURED</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Execute Query</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if query_to_show %}
+<div class="row mb-4">
+    <div class="col-md-10 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Executed SQL Statement</h5>
+            </div>
+            <div class="card-body bg-dark">
+                <code class="text-light">{{ query_to_show }}</code>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h3>Query Results</h3>
+        <hr>
+        {% if results %}
+            {% if results[0].error %}
+                <div class="alert alert-danger">
+                    <strong>SQL Error:</strong> {{ results[0].error }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type 1</th>
+                                <th>Type 2</th>
+                                <th>HP</th>
+                                <th>ATK</th>
+                                <th>DEF</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pokemon in results %}
+                            <tr>
+                                <td>{{ pokemon.id }}</td>
+                                <td><strong>{{ pokemon.name }}</strong></td>
+                                <td>{{ pokemon.type1 }}</td>
+                                <td>{{ pokemon.type2 or '-' }}</td>
+                                <td>{{ pokemon.hp }}</td>
+                                <td>{{ pokemon.attack }}</td>
+                                <td>{{ pokemon.defense }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% else %}
+            {% if search_term %}
+                <p class="text-muted">No Pokemon found matching that criteria.</p>
+            {% else %}
+                <p class="text-muted">Run a query above to see results.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-10 mx-auto">
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <h4>Try these exercises:</h4>
+                <ol>
+                    <li><strong>Normal Search:</strong> Type <code>Pikachu</code> in <strong>SECURED</strong> mode.</li>
+                    <li><strong>SQL Injection:</strong> Select <strong>NOT SECURED</strong> and type <code>' OR '1'='1</code>. Notice how it returns <em>all</em> Pokemon!</li>
+                    <li><strong>Bypass (Harder):</strong> Try to bypass the <strong>BARELY SECURED</strong> filter. It escapes single quotes (<code>'</code> &rarr; <code>''</code>). Can you still find a way?</li>
+                    <li><strong>Error Discovery:</strong> Type a single <code>'</code> in <strong>NOT SECURED</strong> and see the database error.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
