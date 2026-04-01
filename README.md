@@ -71,5 +71,4 @@ For more details on specific missions and the TDD assignment, refer to the [**LE
 
 ---
 
-## 📜 License
-MIT
+GPL-3.0 License

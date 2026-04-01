@@ -181,5 +181,4 @@ After making this change, you'll need to recreate the database (`db init`) for t
 -   **Web UI**: Flask + Bootstrap
 -   **Infrastructure**: Docker & Docker Compose
 
-## 📜 License
-MIT
+GPL-3.0 License
