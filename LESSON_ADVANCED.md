@@ -60,6 +60,51 @@ Using this skill: can you also show the level of the pokemon? How about the spec
 
 ---
 
+## Phase 2.5: The Security Gap (SQL Injection) 🛡️
+
+Now that you've seen how to write manual SQL queries, you might wonder: "What happens if a user provides the data for my query?" 
+
+In most applications, a user's input (like a search term) is "pasted" into a SQL query. If that code is written poorly, a malicious user can "break out" of the search and run their own commands. This is called **SQL Injection**.
+
+### 🕵️ Mission 2.4: The Breach
+Open the **Security Lab** in the Web UI ([http://localhost:5000/search](http://localhost:5000/search)).
+
+#### Experiment 1: Bypassing the Rules
+1.  Select **NOT SECURED** mode.
+2.  Type `' OR '1'='1` in the search box.
+3.  **What happened?** Look at the *Executed SQL Statement*. You'll see: `WHERE name = '' OR '1'='1'`. 
+    *   Because `'1'='1'` is always true, the database returns **every single Pokemon**, even though you didn't search for them! In a real app, this is how attackers bypass login screens without a password.
+
+#### Experiment 2: The Data Leak (UNION)
+1.  Select **NOT SECURED** mode.
+2.  Type `' UNION SELECT id, name, hometown, '...', 0, 0, 0, '2026-01-01' FROM trainers --`
+3.  **What happened?** You just "glued" the results of the `trainers` table onto the `pokemon` table! 
+    *   The `--` at the end tells the database to "ignore" the rest of the original query (the closing quote). 
+    *   Suddenly, your "Pokemon Search" is leaking private trainer data.
+
+#### Experiment 3: The "Drop Table" (Destructive)
+1.  Select **NOT SECURED** mode.
+2.  Type `'; DROP TABLE collections; --`
+3.  **What happened?** (Don't worry, we've protected this lab from actually deleting tables, but in a real app...)
+    *   The semicolon `;` tells the database "This command is finished, now start a NEW one."
+    *   The database would then try to run `DROP TABLE collections`, deleting everyone's caught Pokemon!
+
+---
+
+### 🧠 How to stop the "Injection"
+The secret is **Parameter Binding** (the **SECURED** mode).
+
+When you use the **SECURED** mode, the application sends a template to the database first:
+`SELECT * FROM pokemon WHERE name = :name`
+
+The database "pre-compiles" this command. Then, we send your input (e.g., `' OR '1'='1`) as a separate piece of **data only**. 
+
+The database treats your input as a literal string. It doesn't try to "run" it. It just looks for a Pokemon whose name is exactly the string `' OR '1'='1`. Since no such Pokemon exists, the attack fails, and your database stays safe.
+
+**The Golden Rule:** Never use f-strings or `+` to build SQL queries with user input. Always use parameter binding!
+
+---
+
 ## Phase 3: Schema Evolution (Migrations)
 
 Databases grow as your application's needs change. In this phase, we will "evolve" our schema by adding a new column and a new table.
