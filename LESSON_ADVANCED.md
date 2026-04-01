@@ -64,15 +64,22 @@ Using this skill: can you also show the level of the pokemon? How about the spec
 
 Databases grow as your application's needs change. In this phase, we will "evolve" our schema by adding a new column and a new table.
 
-### 1. Adding an Attribute (`is_shiny`)
-We want to track if a specific caught Pokemon is a rare "Shiny" version. We'll add this to the `collections` table.
+Just like it is commonly done by professionals, we will be using a script to manage the database migration (*migrations are rarely done 'by hand' since there can be a lot to manage*). This migration will have two changes to the database:
 
-### 2. Adding a New Table (`moves`)
-We'll create a `moves` table. This is a **One-to-Many** relationship: One Pokemon species can have **many** different moves.
+1. Adding an Attribute (`is_shiny`)
+   - We want to track if a specific caught Pokemon is a rare "Shiny" version. We'll add this to the `collections` table.
+
+2. Adding a New Table (`moves`)
+   - We'll create a `moves` table. This is a **One-to-Many** relationship: One Pokemon species can have **many** different moves.
+   - This lesson doesn't explore adding moves to the pokemon, but that is a great extension for anyone who is interested in learning more. 
 
 ### 🛠️ Lab Activity: Run the Migration
-Run the following command to update your database live:
+Run the following command to update your database live - [read the code for how it works](https://github.com/RiceC-at-MasonHS/postgres_example_db/blob/2ceda50eeb26f136476335e80c420f4092725e90/src/cli.py#L180):
 ```bash
+# Connect to the docker container ...if you diconnected: 
+docker exec -it pokedex_app bash
+
+# This script handles the migration details
 python main.py db migrate
 ```
 
@@ -81,23 +88,30 @@ Use your `lab query` tool to see if the new column exists:
 ```bash
 python main.py lab query "SELECT id, nickname, is_shiny FROM collections;"
 ```
+You should also be able to see the `is_shiny` column added in PGAdmin4: the `collections` table. 
 
 ### 🧪 Mission 3.2: Toggling Shiny Status
 Now that the database has a `is_shiny` column, let's learn how to update specific rows in two different ways!
 
-**Option A: The Python CLI way**
-We've added a new command specifically for this:
+First, you're going to need the `collection_id` of a trainer's pokemon, to make that individual pokemon into a shiny version.
 ```bash
 # Find a collection_id from your team list first!
+python main.py trainer team <trainer_id>
+```
+
+  - **Option A: The Python CLI way**
+We've added a new command specifically for this:
+```bash
+# actually set the pokemon to be shiny
 python main.py trainer shiny <collection_id> --on
 ```
 
-**Option B: The Raw SQL way**
+  - **Option B: The Raw SQL way**
 Try to do the exact same thing using only the database query tool:
 ```bash
 python main.py lab query "UPDATE collections SET is_shiny = TRUE WHERE id = <collection_id>;"
 ```
-*Tip: After running either command, refresh the Web UI! You should see a "✨ Shiny" badge appear on your Pokemon's card.*
+*Tip: After running either command, refresh the Web UI! You should see a "💫 Shiny" badge appear on your Pokemon's card.*
 
 ---
 
@@ -126,10 +140,12 @@ Try to set a Pokemon's level to 999.
 python main.py lab query "UPDATE collections SET level = 999 WHERE id = 2;"
 # we made an assumption for the <collection_id> above, you may need to change it
 ```
- [!TIP] 
+> [!TIP] 
 > If you are in Rice's class, You can turn in a screenshot at this point. 
 >
 > Right-click on the `collections` table, and `View/Edit Data` then `All Rows`.
+>
+> [Alternate]: Left-click on the `collections` table, then `ALT + SHIFT + V`.
 >
 > Your screenshot should show:
 >    - (1) the contents of the `collections` table

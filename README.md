@@ -32,6 +32,8 @@ This lab demonstrates how different application layers interact with a relationa
 
 ## 🚀 Getting Started
 
+These instructions are repeating the start of the [**LESSON.md**](./LESSON.md), in case you can't wait to get started. 
+
 ### 1. Prerequisites
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine installed.
 - [Git](https://git-scm.com/) installed.

@@ -112,6 +112,8 @@ Professional developers use tools like **pgAdmin** to look at the "raw" tables.
 >
 > Right-click on the `trainers` table, and `View/Edit Data` then `All Rows`.
 >
+> [Alternate]: Left-click on the `trainers` table, then `ALT + SHIFT + V`.
+>
 > Your screenshot should show:
 >    - (1) the contents of the `trainers` table
 >    - (2) your own name, as one of the included trainers
