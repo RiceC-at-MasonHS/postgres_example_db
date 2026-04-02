@@ -45,8 +45,8 @@ Find all Pokemon in the Pokedex that are of the **'Fire'** type.
 *   **Hint:** `SELECT * FROM pokemon WHERE type1 = 'Fire';`
 
 ### ⚡ Mission 2.2: The Power Trip
-List only the **names** of Pokemon that have an **attack higher than 60**, ordered from strongest to weakest.
-*   **Hint:** `SELECT name FROM pokemon WHERE attack > 60 ORDER BY attack DESC;`
+List only the **names** of Pokemon that have an **attack higher than 30**, ordered from strongest to weakest.
+*   **Hint:** `SELECT name FROM pokemon WHERE attack > 30 ORDER BY attack DESC;`
 
 ### 🤝 Mission 2.3: The Detective (The JOIN)
 List every trainer's name alongside the nickname of the Pokemon they've caught.
@@ -56,22 +56,24 @@ List every trainer's name alongside the nickname of the Pokemon they've caught.
     FROM trainers 
     JOIN collections ON trainers.id = collections.trainer_id;
     ```
-Using this skill: can you also show the level of the pokemon? How about the species (from the `pokemon` table)?
+Using this skill: 
+- Can you NOT show the level of the pokemon in the table? 
+- How about the species (from the `pokemon` table)?
 
 ---
 
 ## Phase 3: Schema Evolution (Migrations)
 
-Databases grow as your application's needs change. In this phase, we will "evolve" our schema by adding a new column and a new table.
+Databases grow as your application's needs change. In this phase, we will "evolve" our schema by adding a new column and a new table. This can be a trick part of database management, becuase you will likely want to change the database without deleting any of the data within it. 
 
 Just like it is commonly done by professionals, we will be using a script to manage the database migration (*migrations are rarely done 'by hand' since there can be a lot to manage*). This migration will have two changes to the database:
 
-1. Adding an Attribute (`is_shiny`)
+1. Adding an Attribute (`is_shiny`) as a column to the `collections` table.
    - We want to track if a specific caught Pokemon is a rare "Shiny" version. We'll add this to the `collections` table.
 
-2. Adding a New Table (`moves`)
+2. Adding a New Table: `moves`, to describe moves known by each pokemon.
    - We'll create a `moves` table. This is a **One-to-Many** relationship: One Pokemon species can have **many** different moves.
-   - This lesson doesn't explore adding moves to the pokemon, but that is a great extension for anyone who is interested in learning more. 
+   - This lesson doesn't explore adding moves to the pokemon (*beyond adding the table*) but that is a great extension for anyone who is interested in learning more and testing their understanding.
 
 ### 🛠️ Lab Activity: Run the Migration
 Run the following command to update your database live - [read the code for how it works](https://github.com/RiceC-at-MasonHS/postgres_example_db/blob/2ceda50eeb26f136476335e80c420f4092725e90/src/cli.py#L180):
@@ -100,14 +102,14 @@ python main.py trainer team <trainer_id>
 ```
 
   - **Option A: The Python CLI way**
-We've added a new command specifically for this:
+We've added a command specifically for this:
 ```bash
 # actually set the pokemon to be shiny
 python main.py trainer shiny <collection_id> --on
 ```
 
   - **Option B: The Raw SQL way**
-Try to do the exact same thing using only the database query tool:
+Try to do the exact same thing using only the database `lab query` tool:
 ```bash
 python main.py lab query "UPDATE collections SET is_shiny = TRUE WHERE id = <collection_id>;"
 ```
@@ -117,11 +119,17 @@ python main.py lab query "UPDATE collections SET is_shiny = TRUE WHERE id = <col
 
 ## Phase 4: Data Integrity (The Rules)
 
-A good database protects its data using **Constraints**.
+A good database protects its data using **Constraints**. Those constraints help protect data **integrity** and reduce the available space for errant or malicious data to be entered into the database. ...Little Bobby Tables:
+
+![Famous XKCD comic about SQL injection](https://imgs.xkcd.com/comics/exploits_of_a_mom_2x.png)
 
 ### 🛠️ Lab Activity: Secure the Database
 Run the following command to add rules to your tables:
 ```bash
+# Connect to the docker container ...if you diconnected: 
+docker exec -it pokedex_app bash
+
+# Add rules to your database
 python main.py db secure
 ```
 
