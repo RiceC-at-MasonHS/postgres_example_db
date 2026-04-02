@@ -79,10 +79,11 @@ Open the **Security Lab** in the Web UI ([http://localhost:5000/search](http://l
 
 #### Experiment 2: The Data Leak (UNION)
 1.  Select **NOT SECURED** mode.
-2.  Type `' UNION SELECT id, name, hometown, '...', 0, 0, 0, '2026-01-01' FROM trainers --`
+2.  Type `' UNION SELECT id, name, hometown, '...', 0, 0, 0, 0, created_at FROM trainers --`
 3.  **What happened?** You just "glued" the results of the `trainers` table onto the `pokemon` table! 
     *   The `--` at the end tells the database to "ignore" the rest of the original query (the closing quote). 
     *   Suddenly, your "Pokemon Search" is leaking private trainer data.
+    *   Try this again, but [prepend](https://dictionary.cambridge.org/us/dictionary/english/prepend) the string above with the name of a pokemon to see a table mixed with trainer and pokemon data.
 
 #### Experiment 3: The "Drop Table" (Destructive)
 1.  Select **NOT SECURED** mode.
