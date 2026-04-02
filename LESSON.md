@@ -126,11 +126,9 @@ Now that you know how to query the database, let's look at how **not** to do it.
 
 #### 🧠 Deep Dive: How does "Secured" actually work?
 When you use the **SECURED** mode, the application sends a template to the database first:
-`SELECT * FROM pokemon WHERE name = :name`
+`SELECT * FROM pokemon WHERE name = :name` Which is followed by a user-input data packet.
 
-The database "pre-compiles" this command. Then, we send the data (e.g., `' OR '1'='1`) in a separate packet. The database treats that entire packet as **data only**. It never tries to run the data as a command. 
-
-Even if you type a malicious command, the database just looks for a Pokemon whose literal name is `' OR '1'='1`. Since no such Pokemon exists, it returns zero results safely.
+The SQL language & Postgres handle the *parameter* `:name` as a place to *bind* user-input data, which it can 'sanitize' first. That way, even if a user sends malicious data (as above) the database just looks for a Pokemon whose literal name is `' OR '1'='1`. Since no such Pokemon exists, it returns zero results safely.
 
 **Why it matters:** In a real application, a SQL injection could allow an attacker to bypass login screens, steal user data, or even delete entire tables! Always use **Parameter Binding** in your code.
 
