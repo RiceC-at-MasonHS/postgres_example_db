@@ -103,7 +103,9 @@ The database "pre-compiles" this command. Then, we send your input (e.g., `' OR 
 
 The database treats your input as a literal string. It doesn't try to "run" it. It just looks for a Pokemon whose name is exactly the string `' OR '1'='1`. Since no such Pokemon exists, the attack fails, and your database stays safe.
 
-**The Golden Rule:** Never use f-strings or `+` to build SQL queries with user input. Always use parameter binding!
+**The Golden Rule:** Never use f-strings or `+` to build SQL queries with user input. Always use parameter binding!    ...Little Bobby Tables:
+
+![Famous XKCD comic about SQL injection](https://imgs.xkcd.com/comics/exploits_of_a_mom_2x.png)
 
 ---
 
@@ -164,9 +166,7 @@ python main.py lab query "UPDATE collections SET is_shiny = TRUE WHERE id = <col
 
 ## Phase 4: Data Integrity (The Rules)
 
-A good database protects its data using **Constraints**. Those constraints help protect data **integrity** and reduce the available space for errant or malicious data to be entered into the database. ...Little Bobby Tables:
-
-![Famous XKCD comic about SQL injection](https://imgs.xkcd.com/comics/exploits_of_a_mom_2x.png)
+A good database protects its data using **Constraints**. Those constraints help protect data **integrity** and reduce the available space for errant or malicious data to be entered into the database. 
 
 ### 🛠️ Lab Activity: Secure the Database
 Run the following command to add rules to your tables:
