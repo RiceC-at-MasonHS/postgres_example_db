@@ -76,8 +76,8 @@ This starts the following services:
 Set up the schema and seed initial data:
 
 ```bash
-docker exec -it pokedex_app python main.py db init
-docker exec -it pokedex_app python main.py db seed
+docker exec -it pokedex_cli python main.py db init
+docker exec -it pokedex_cli python main.py db seed
 ```
 
 ---

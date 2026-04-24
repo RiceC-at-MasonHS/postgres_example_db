@@ -13,9 +13,6 @@ COPY requirements.txt .
 # RUN pip3 install --no-cache-dir psycopg2-binary
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
-
 # Set PYTHONPATH to include the app directory
 ENV PYTHONPATH=/app:$PYTHONPATH
 

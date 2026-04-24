@@ -30,7 +30,7 @@ Before you can see any Pokemon, you need to set up the "schema" (the tables) and
 
 ```bash
 # Enter the app container
-docker exec -it pokedex_app bash
+docker exec -it pokedex_cli bash
 
 # Inside the container, run these commands:
 python main.py db init

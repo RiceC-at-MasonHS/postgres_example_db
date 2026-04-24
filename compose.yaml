@@ -37,7 +37,8 @@ services:
 
   app:
     build: .
-    container_name: pokedex_app
+    container_name: pokedex_cli
+    hostname: pokedex_cli
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/pokedex
       DB_HOST: db
@@ -50,7 +51,8 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./main.py:/app/main.py
     working_dir: /app
     command: /bin/bash
     stdin_open: true
